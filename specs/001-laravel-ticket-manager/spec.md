@@ -18,6 +18,12 @@ optimizations, Eloquent ORM with N+1 awareness, mobile-first, Dockerized."
 ### Session 2026-05-19
 
 - Q: How should status changes work on mobile devices (drag-and-drop vs tap)? → A: Touch-aware drag-and-drop using SortableJS touch events — same interaction as desktop on all screen sizes.
+
+### Session 2026-05-19 (testing mandate)
+
+- Directive: Tests are MANDATORY. TDD cycle enforced: tests written and failing BEFORE implementation. Tests MUST NOT cover only the happy path — edge cases, invalid inputs, authorization failures, concurrent access, and fault conditions are first-class test targets. The goal is to break the application in tests before a bug can reach production.
+- Q: Which test framework? → A: Pest — function-based, expressive syntax (`it('rejects unauthenticated access', ...)`) with `pest-plugin-laravel` for full Laravel integration.
+- Q: Which test types are in scope? → A: Feature tests + Unit tests. Feature tests cover HTTP flows, authentication, authorization, validation, and DB state against a real SQLite test DB. Unit tests cover pure business logic: priority sorting, overdue detection, status transition rules, export formatting.
 - Q: Can tickets be manually reordered within a column? → A: No manual reordering; tickets are auto-sorted by priority (Critical → High → Medium → Low), then by due date ascending within each column.
 - Q: What language should the UI be in? → A: English — all labels, messages, error text, and UI copy in English.
 - Q: What level of login brute-force protection is required? → A: Framework defaults — Laravel's built-in rate limiting (5 attempts, 60-second lockout) already provided by the Livewire starter kit; no additional hardening needed.
@@ -216,6 +222,17 @@ pages are accessible. After logging out, pages redirect to login again.
 - **FR-016**: System MUST provide a data export action on the dashboard that downloads a complete
   JSON snapshot of all the user's projects and their tickets (all fields included), suitable for
   backup and restore purposes.
+- **FR-017**: Every feature MUST have automated tests written BEFORE implementation (TDD) using
+  Pest with pest-plugin-laravel. Two test layers are required:
+    - **Feature tests**: Full HTTP request lifecycle against a real SQLite test DB — covering
+      authentication, authorization, request validation, response structure, and DB state changes.
+    - **Unit tests**: Pure business logic in isolation — priority sort order, overdue detection
+      logic, status transition rules, JSON export structure.
+  Tests that only verify expected success flows are insufficient.
+- **FR-018**: Test scenarios MUST include adversarial cases: submitting malformed or missing data,
+  accessing another user's resources, triggering cascade deletes, hitting boundary values (empty
+  strings, null optional fields, maximum field lengths), and verifying that invalid status
+  transitions are rejected with the correct error response.
 
 ### Deferred Requirements (not in v1)
 
@@ -258,6 +275,11 @@ pages are accessible. After logging out, pages redirect to login again.
   or perceptible slowdown.
 - **SC-008**: The JSON data export completes and triggers a file download in under 5 seconds
   regardless of the number of projects or tickets stored.
+- **SC-009**: Every feature has a passing test suite before its implementation is merged. No
+  feature is considered complete without tests that cover at least: one happy path, two invalid
+  input scenarios, one authorization/boundary check, and one edge case.
+- **SC-010**: The test suite catches at least one real bug per feature area before the
+  implementation is considered production-ready (verified during development cycle).
 
 ---
 
@@ -275,6 +297,11 @@ pages are accessible. After logging out, pages redirect to login again.
 - **Fixed status columns**: Ticket workflow uses six fixed statuses. Custom columns are out
   of scope for v1.
 - **No file attachments or comments**: Ticket detail view is text/field-only in v1.
+- **Testing is mandatory and TDD-enforced**: Tests are not optional. Every feature follows the
+  Red → Green → Refactor cycle. Framework: Pest + pest-plugin-laravel. Two layers: Feature tests
+  (full HTTP + real SQLite test DB) and Unit tests (pure business logic). Tests deliberately
+  target edge cases, invalid inputs, authorization failures, and fault conditions — not only
+  success flows. No feature is complete without adversarial test coverage.
 - **Performance optimizations**: Will use Laravel and PHP built-in tools (Eloquent eager loading,
   framework cache). No micro-optimizations or custom low-level performance code.
 - **Drag-and-drop**: Board drag-and-drop will use SortableJS with its touch event plugin enabled,
