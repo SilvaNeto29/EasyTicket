@@ -1,0 +1,57 @@
+# Laravel
+/vendor/
+/node_modules/
+/public/build/
+/public/hot/
+/public/storage/
+/storage/*.key
+/storage/app/
+/storage/framework/cache/
+/storage/framework/sessions/
+/storage/framework/testing/
+/storage/framework/views/
+/storage/logs/
+/bootstrap/cache/
+.env
+.env.backup
+.env.production
+.env.*.local
+
+# SQLite
+*.sqlite
+*.sqlite-shm
+*.sqlite-wal
+database/*.sqlite
+database/*.sqlite-shm
+database/*.sqlite-wal
+
+# Docker
+docker-compose.override.yml
+
+# Testing
+/.phpunit.cache/
+/coverage/
+.phpunit.result.cache
+
+# IDE / Editor
+.idea/
+.vscode/
+*.swp
+*.swo
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Build artifacts
+/public/css/
+/public/js/
+/public/mix-manifest.json
+/public/manifest.json
+npm-debug.log
+yarn-error.log
+
+# Composer
+composer.phar
+
+# Speckit runtime (keep templates/scripts, ignore generated session state)
+.specify/feature.json
