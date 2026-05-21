@@ -16,5 +16,8 @@ php artisan migrate --force --no-interaction
 php artisan config:cache --no-interaction
 php artisan route:cache --no-interaction
 
+# Ensure bootstrap/cache files are writable by the host user (uid 1000) for local dev
+chmod -R 777 bootstrap/cache 2>/dev/null || true
+
 php-fpm -D
 nginx -g "daemon off;"

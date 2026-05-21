@@ -21,7 +21,10 @@ class AppServiceProvider extends ServiceProvider
     public function boot(): void
     {
         if (DB::getDriverName() === 'sqlite') {
-            DB::statement('PRAGMA journal_mode=WAL;');
+            $database = config('database.connections.sqlite.database');
+            if ($database !== ':memory:') {
+                DB::statement('PRAGMA journal_mode=WAL;');
+            }
             DB::statement('PRAGMA foreign_keys=ON;');
         }
     }
