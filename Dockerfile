@@ -7,21 +7,13 @@ RUN apk add --no-cache \
     git \
     unzip \
     curl \
-    libpng-dev \
     oniguruma-dev \
     libxml2-dev \
     sqlite \
     sqlite-dev
 
-RUN docker-php-ext-install \
-    pdo_sqlite \
-    mbstring \
-    xml \
-    ctype \
-    fileinfo \
-    tokenizer \
-    bcmath \
-    pcntl
+# bcmath, pcntl, mbstring, xml need installation; pdo_sqlite/ctype/fileinfo/tokenizer are already compiled in
+RUN docker-php-ext-install bcmath pcntl mbstring xml
 
 COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
 
