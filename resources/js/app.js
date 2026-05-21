@@ -21,10 +21,13 @@ function initKanban() {
 
                 if (! ticketId || ! newStatus) return;
 
-                // Dispatch Livewire event to the projects.show component
-                const component = document.querySelector('[wire\\:id]');
-                if (component) {
-                    Livewire.find(component.getAttribute('wire:id'))
+                // Walk up from the column to find the owning Livewire component
+                let el = event.to;
+                while (el && ! el.hasAttribute('wire:id')) {
+                    el = el.parentElement;
+                }
+                if (el) {
+                    Livewire.find(el.getAttribute('wire:id'))
                             .call('updateTicketStatus', parseInt(ticketId, 10), newStatus);
                 }
             },
