@@ -184,7 +184,7 @@ description: "Task list for EasyTicket MCP Server with Sanctum Authentication"
 ## Phase 8: Polish & Integration
 
 - [X] T021 Run full Pest suite `./vendor/bin/pest --no-coverage`; fix any regressions introduced by `HasApiTokens` or Sanctum config changes
-- [ ] T022 [P] Rebuild Docker image `docker compose up -d --build`; verify `/mcp` endpoint reachable at `http://localhost:8080/mcp` and returns 401 for unauthenticated requests
+- [X] T022 [P] Rebuild Docker image `docker compose up -d --build`; verify `/mcp` endpoint reachable at `http://localhost:8080/mcp` and returns 401 for unauthenticated requests
 - [X] T023 [P] Update `specs/002-mcp-sanctum-tools/quickstart.md` with Claude Desktop configuration example (server URL, auth header setup, token generation steps)
 
 ---
