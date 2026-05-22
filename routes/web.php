@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\ExportController;
 use Illuminate\Support\Facades\Route;
+use Laravel\Mcp\Facades\Mcp;
 use Livewire\Volt\Volt;
 
 Route::get('/', fn () => redirect()->route('dashboard'));
@@ -27,5 +28,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
 Route::view('profile', 'profile')
     ->middleware(['auth'])
     ->name('profile');
+
+Mcp::web('/mcp', \App\Mcp\Servers\EasyTicketServer::class)
+    ->middleware(['auth:sanctum']);
 
 require __DIR__.'/auth.php';
