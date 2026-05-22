@@ -7,7 +7,6 @@ services:
       - "8080:80"
     volumes:
       - .:/var/www/html
-      - sqlite_data:/var/www/html/database
       - storage_data:/var/www/html/storage
       - bootstrap_cache:/var/www/html/bootstrap/cache
     env_file:
@@ -15,6 +14,5 @@ services:
     restart: unless-stopped
 
 volumes:
-  sqlite_data:
   storage_data:
   bootstrap_cache:
