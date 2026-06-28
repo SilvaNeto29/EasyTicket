@@ -182,11 +182,20 @@ new #[Layout('layouts.app')] class extends Component
                         @endif
                     </div>
 
-                    <div class="grid grid-cols-2 sm:grid-cols-3 gap-4 text-sm border-t border-gray-100 pt-4">
-                        <div>
-                            <p class="text-xs font-medium text-gray-500 uppercase tracking-wide mb-1">Status</p>
+                    {{-- Property rows --}}
+                    <div class="border-t border-gray-100 divide-y divide-gray-50">
+
+                        {{-- Status --}}
+                        <div class="flex items-center gap-4 py-3">
+                            <div class="flex items-center gap-2 w-32 flex-shrink-0">
+                                <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                          d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                                </svg>
+                                <span class="text-xs font-medium text-gray-500 uppercase tracking-wide">Status</span>
+                            </div>
                             <select wire:change="updateStatus($event.target.value)"
-                                    class="w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 text-sm">
+                                    class="rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 text-sm">
                                 @foreach (App\Enums\TicketStatus::cases() as $s)
                                     <option value="{{ $s->value }}"
                                         {{ $ticket->status === $s ? 'selected' : '' }}>
@@ -195,23 +204,64 @@ new #[Layout('layouts.app')] class extends Component
                                 @endforeach
                             </select>
                         </div>
-                        <div>
-                            <p class="text-xs font-medium text-gray-500 uppercase tracking-wide mb-1">Priority</p>
-                            <p class="text-gray-800 font-medium">{{ $ticket->priority->label() }}</p>
-                        </div>
-                        @if ($ticket->due_date)
-                            <div>
-                                <p class="text-xs font-medium text-gray-500 uppercase tracking-wide mb-1">Due Date</p>
-                                <p class="{{ $ticket->is_overdue ? 'text-red-600 font-semibold' : 'text-gray-800' }}">
-                                    {{ $ticket->due_date->format('M j, Y') }}
-                                </p>
-                            </div>
-                        @endif
-                    </div>
 
-                    <div class="text-xs text-gray-400 border-t border-gray-100 pt-4">
-                        Created {{ $ticket->created_at->diffForHumans() }} ·
-                        Updated {{ $ticket->updated_at->diffForHumans() }}
+                        {{-- Priority --}}
+                        <div class="flex items-center gap-4 py-3">
+                            <div class="flex items-center gap-2 w-32 flex-shrink-0">
+                                <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                          d="M3 4h13M3 8h9m-9 4h9m5-4v12m0 0l-4-4m4 4l4-4"/>
+                                </svg>
+                                <span class="text-xs font-medium text-gray-500 uppercase tracking-wide">Priority</span>
+                            </div>
+                            <span class="text-sm font-medium px-2.5 py-0.5 rounded-full
+                                {{ match($ticket->priority) {
+                                    TicketPriority::Critical => 'bg-red-100 text-red-700',
+                                    TicketPriority::High     => 'bg-orange-100 text-orange-700',
+                                    TicketPriority::Medium   => 'bg-yellow-100 text-yellow-700',
+                                    TicketPriority::Low      => 'bg-gray-100 text-gray-600',
+                                } }}">
+                                {{ $ticket->priority->label() }}
+                            </span>
+                        </div>
+
+                        {{-- Due Date --}}
+                        <div class="flex items-center gap-4 py-3">
+                            <div class="flex items-center gap-2 w-32 flex-shrink-0">
+                                <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                          d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+                                </svg>
+                                <span class="text-xs font-medium text-gray-500 uppercase tracking-wide">Due Date</span>
+                            </div>
+                            @if ($ticket->due_date)
+                                <span class="text-sm {{ $ticket->is_overdue ? 'text-red-600 font-semibold' : 'text-gray-700' }}">
+                                    {{ $ticket->due_date->format('M j, Y') }}
+                                    @if ($ticket->is_overdue)
+                                        <span class="ml-1 text-xs text-red-500">(overdue)</span>
+                                    @endif
+                                </span>
+                            @else
+                                <span class="text-sm text-gray-400 italic">No due date</span>
+                            @endif
+                        </div>
+
+                        {{-- Created / Updated --}}
+                        <div class="flex items-center gap-4 py-3">
+                            <div class="flex items-center gap-2 w-32 flex-shrink-0">
+                                <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                          d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                                </svg>
+                                <span class="text-xs font-medium text-gray-500 uppercase tracking-wide">Created</span>
+                            </div>
+                            <span class="text-sm text-gray-500">
+                                {{ $ticket->created_at->diffForHumans() }}
+                                <span class="text-gray-400 mx-1">·</span>
+                                updated {{ $ticket->updated_at->diffForHumans() }}
+                            </span>
+                        </div>
+
                     </div>
                 @endif
             </div>

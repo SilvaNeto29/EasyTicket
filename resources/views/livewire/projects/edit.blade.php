@@ -58,29 +58,52 @@ new #[Layout('layouts.app')] class extends Component
         </div>
 
         <div class="bg-white rounded-xl border border-gray-200 shadow-sm p-6 sm:p-8">
-            <h1 class="text-xl font-bold text-gray-900 mb-6">Edit Project</h1>
+            <div class="mb-6">
+                <h1 class="text-xl font-bold text-gray-900">Edit Project</h1>
+                <p class="text-sm text-gray-500 mt-1">Update the details for "{{ $project->name }}".</p>
+            </div>
 
             <form wire:submit="save" class="space-y-5">
                 {{-- Name --}}
                 <div>
-                    <x-input-label for="name" value="Project Name" />
-                    <x-text-input id="name" wire:model="name" type="text" class="mt-1 block w-full" autofocus />
+                    <label for="name" class="flex items-center gap-1.5 text-sm font-medium text-gray-700 mb-1">
+                        <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                  d="M3 7a2 2 0 012-2h4l2 2h8a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V7z"/>
+                        </svg>
+                        Project Name
+                    </label>
+                    <x-text-input id="name" wire:model="name" type="text" class="block w-full" autofocus />
                     <x-input-error :messages="$errors->get('name')" class="mt-2" />
                 </div>
 
                 {{-- Description --}}
                 <div>
-                    <x-input-label for="description" value="Description (optional)" />
+                    <label for="description" class="flex items-center gap-1.5 text-sm font-medium text-gray-700 mb-1">
+                        <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                  d="M4 6h16M4 10h16M4 14h10"/>
+                        </svg>
+                        Description
+                        <span class="text-gray-400 font-normal">(optional)</span>
+                    </label>
                     <textarea id="description" wire:model="description"
-                              class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 text-sm"
+                              class="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 text-sm"
                               rows="3"></textarea>
                     <x-input-error :messages="$errors->get('description')" class="mt-2" />
                 </div>
 
                 {{-- Color --}}
                 <div>
-                    <x-input-label for="color" value="Color (optional)" />
-                    <div class="mt-1 flex items-center gap-3">
+                    <label for="color" class="flex items-center gap-1.5 text-sm font-medium text-gray-700 mb-1">
+                        <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                  d="M7 21a4 4 0 01-4-4V5a2 2 0 012-2h4a2 2 0 012 2v12a4 4 0 01-4 4zm0 0h12a2 2 0 002-2v-4a2 2 0 00-2-2h-2.343M11 7.343l1.657-1.657a2 2 0 012.828 0l2.829 2.829a2 2 0 010 2.828l-8.486 8.485M7 17h.01"/>
+                        </svg>
+                        Color
+                        <span class="text-gray-400 font-normal">(optional)</span>
+                    </label>
+                    <div class="flex items-center gap-3">
                         <input id="color" wire:model="color" type="color"
                                class="h-10 w-16 rounded-md border border-gray-300 cursor-pointer p-0.5"
                                value="{{ $color ?? '#6366f1' }}" />

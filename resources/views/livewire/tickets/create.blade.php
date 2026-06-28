@@ -38,6 +38,11 @@ new #[Layout('layouts.app')] class extends Component
                 $this->projectId = (int) $projectId;
             }
         }
+
+        $status = request()->query('status');
+        if ($status && collect(TicketStatus::cases())->contains(fn ($s) => $s->value === $status)) {
+            $this->status = $status;
+        }
     }
 
     public function save(CreateTicket $action): void
@@ -90,15 +95,24 @@ new #[Layout('layouts.app')] class extends Component
         </div>
 
         <div class="bg-white rounded-xl border border-gray-200 shadow-sm p-6 sm:p-8">
-            <h1 class="text-xl font-bold text-gray-900 mb-6">New Ticket</h1>
+            <div class="mb-6">
+                <h1 class="text-xl font-bold text-gray-900">New Ticket</h1>
+                <p class="text-sm text-gray-500 mt-1">Track a task, bug, or feature request.</p>
+            </div>
 
             <form wire:submit="save" class="space-y-5">
                 {{-- Project selector if not set --}}
                 @if (! $projectId)
                     <div>
-                        <x-input-label for="projectId" value="Project" />
+                        <label for="projectId" class="flex items-center gap-1.5 text-sm font-medium text-gray-700 mb-1">
+                            <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                      d="M3 7a2 2 0 012-2h4l2 2h8a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V7z"/>
+                            </svg>
+                            Project
+                        </label>
                         <select id="projectId" wire:model="projectId"
-                                class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 text-sm">
+                                class="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 text-sm">
                             <option value="0">Select a project…</option>
                             @foreach (auth()->user()->projects()->orderBy('name')->get() as $project)
                                 <option value="{{ $project->id }}">{{ $project->name }}</option>
@@ -109,17 +123,30 @@ new #[Layout('layouts.app')] class extends Component
 
                 {{-- Title --}}
                 <div>
-                    <x-input-label for="title" value="Title" />
-                    <x-text-input id="title" wire:model="title" type="text" class="mt-1 block w-full"
+                    <label for="title" class="flex items-center gap-1.5 text-sm font-medium text-gray-700 mb-1">
+                        <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                  d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
+                        </svg>
+                        Title
+                    </label>
+                    <x-text-input id="title" wire:model="title" type="text" class="block w-full"
                                   placeholder="Brief description of the issue" autofocus />
                     <x-input-error :messages="$errors->get('title')" class="mt-2" />
                 </div>
 
                 {{-- Description --}}
                 <div>
-                    <x-input-label for="description" value="Description (optional)" />
+                    <label for="description" class="flex items-center gap-1.5 text-sm font-medium text-gray-700 mb-1">
+                        <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                  d="M4 6h16M4 10h16M4 14h10"/>
+                        </svg>
+                        Description
+                        <span class="text-gray-400 font-normal">(optional)</span>
+                    </label>
                     <textarea id="description" wire:model="description"
-                              class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 text-sm"
+                              class="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 text-sm"
                               rows="4" placeholder="Steps to reproduce, context, etc."></textarea>
                     <x-input-error :messages="$errors->get('description')" class="mt-2" />
                 </div>
@@ -127,9 +154,15 @@ new #[Layout('layouts.app')] class extends Component
                 <div class="grid grid-cols-2 gap-4">
                     {{-- Priority --}}
                     <div>
-                        <x-input-label for="priority" value="Priority" />
+                        <label for="priority" class="flex items-center gap-1.5 text-sm font-medium text-gray-700 mb-1">
+                            <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                      d="M3 4h13M3 8h9m-9 4h9m5-4v12m0 0l-4-4m4 4l4-4"/>
+                            </svg>
+                            Priority
+                        </label>
                         <select id="priority" wire:model="priority"
-                                class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 text-sm">
+                                class="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 text-sm">
                             @foreach (App\Enums\TicketPriority::cases() as $p)
                                 <option value="{{ $p->value }}">{{ $p->label() }}</option>
                             @endforeach
@@ -139,9 +172,15 @@ new #[Layout('layouts.app')] class extends Component
 
                     {{-- Status --}}
                     <div>
-                        <x-input-label for="status" value="Status" />
+                        <label for="status" class="flex items-center gap-1.5 text-sm font-medium text-gray-700 mb-1">
+                            <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                      d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                            </svg>
+                            Status
+                        </label>
                         <select id="status" wire:model="status"
-                                class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 text-sm">
+                                class="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 text-sm">
                             @foreach (App\Enums\TicketStatus::cases() as $s)
                                 <option value="{{ $s->value }}">{{ $s->label() }}</option>
                             @endforeach
@@ -152,8 +191,15 @@ new #[Layout('layouts.app')] class extends Component
 
                 {{-- Due Date --}}
                 <div>
-                    <x-input-label for="dueDate" value="Due Date (optional)" />
-                    <x-text-input id="dueDate" wire:model="dueDate" type="date" class="mt-1 block w-full" />
+                    <label for="dueDate" class="flex items-center gap-1.5 text-sm font-medium text-gray-700 mb-1">
+                        <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                  d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+                        </svg>
+                        Due Date
+                        <span class="text-gray-400 font-normal">(optional)</span>
+                    </label>
+                    <x-text-input id="dueDate" wire:model="dueDate" type="date" class="block w-full" />
                     <x-input-error :messages="$errors->get('dueDate')" class="mt-2" />
                 </div>
 

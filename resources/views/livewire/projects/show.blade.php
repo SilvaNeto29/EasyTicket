@@ -115,14 +115,15 @@ new #[Layout('layouts.app')] class extends Component
                 @php $colTickets = $this->groupedTickets[$status->value] @endphp
                 <div class="flex-none w-full lg:w-72 xl:w-80">
                     <div class="bg-gray-50 rounded-xl border border-gray-200 overflow-hidden">
-                        {{-- Column Header --}}
-                        <div class="px-4 py-3 border-b border-gray-200 flex items-center justify-between bg-white">
+                        {{-- Column Header with color tint --}}
+                        <div class="px-4 py-3 border-b border-gray-200 flex items-center justify-between"
+                             style="background-color: {{ $status->color() }}18">
                             <div class="flex items-center gap-2">
                                 <span class="w-2.5 h-2.5 rounded-full"
                                       style="background-color: {{ $status->color() }}"></span>
                                 <span class="text-sm font-semibold text-gray-800">{{ $status->label() }}</span>
                             </div>
-                            <span class="text-xs font-medium text-gray-500 bg-gray-100 px-2 py-0.5 rounded-full">
+                            <span class="text-xs font-medium text-gray-500 bg-white/70 px-2 py-0.5 rounded-full">
                                 {{ $colTickets->count() }}
                             </span>
                         </div>
@@ -134,7 +135,12 @@ new #[Layout('layouts.app')] class extends Component
                             @foreach ($colTickets as $ticket)
                                 <div class="bg-white rounded-lg border border-gray-200 p-3 shadow-sm
                                             hover:shadow-md transition cursor-grab active:cursor-grabbing
-                                            {{ $ticket->is_overdue ? 'border-l-4 border-l-red-500' : '' }}"
+                                            {{ match($ticket->priority) {
+                                                TicketPriority::Critical => 'border-l-4 border-l-red-500',
+                                                TicketPriority::High     => 'border-l-4 border-l-amber-500',
+                                                TicketPriority::Medium   => 'border-l-4 border-l-blue-400',
+                                                TicketPriority::Low      => 'border-l-4 border-l-slate-300',
+                                            } }}"
                                      data-ticket-id="{{ $ticket->id }}">
 
                                     <div class="flex items-start justify-between gap-2 mb-2">
@@ -143,7 +149,7 @@ new #[Layout('layouts.app')] class extends Component
                                             {{ $ticket->title }}
                                         </a>
                                         @if ($ticket->is_overdue)
-                                            <span class="flex-shrink-0 text-xs font-bold text-red-600">!</span>
+                                            <span class="flex-shrink-0 text-xs font-bold text-red-600 bg-red-50 px-1.5 py-0.5 rounded">!</span>
                                         @endif
                                     </div>
 
@@ -158,7 +164,7 @@ new #[Layout('layouts.app')] class extends Component
                                             {{ $ticket->priority->label() }}
                                         </span>
                                         @if ($ticket->due_date)
-                                            <span class="text-xs text-gray-400">
+                                            <span class="text-xs {{ $ticket->is_overdue ? 'text-red-500 font-medium' : 'text-gray-400' }}">
                                                 {{ $ticket->due_date->format('M j') }}
                                             </span>
                                         @endif
@@ -168,7 +174,11 @@ new #[Layout('layouts.app')] class extends Component
 
                             @if ($colTickets->isEmpty())
                                 <div class="h-16 rounded-lg border-2 border-dashed border-gray-200 flex items-center justify-center">
-                                    <span class="text-xs text-gray-400">Drop here</span>
+                                    <a href="{{ route('tickets.create', ['project_id' => $project->id, 'status' => $status->value]) }}"
+                                       wire:navigate
+                                       class="text-xs text-gray-400 hover:text-indigo-500 transition">
+                                        + Add ticket
+                                    </a>
                                 </div>
                             @endif
                         </div>

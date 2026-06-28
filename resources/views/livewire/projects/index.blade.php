@@ -77,10 +77,10 @@ new #[Layout('layouts.app')] class extends Component
         @else
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
                 @foreach ($projects as $project)
-                    <div class="bg-white rounded-xl border border-gray-200 overflow-hidden hover:shadow-md transition group">
+                    <div class="bg-white rounded-xl border border-gray-200 overflow-hidden hover:shadow-md hover:border-indigo-200 transition group">
                         {{-- Color bar --}}
                         @if ($project->color)
-                            <div class="h-1.5" style="background-color: {{ $project->color }}"></div>
+                            <div class="h-2" style="background-color: {{ $project->color }}"></div>
                         @endif
 
                         <div class="p-5">

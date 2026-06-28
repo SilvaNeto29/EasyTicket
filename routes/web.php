@@ -1,11 +1,26 @@
 <?php
 
 use App\Http\Controllers\ExportController;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Route;
 use Laravel\Mcp\Facades\Mcp;
 use Livewire\Volt\Volt;
 
 Route::get('/', fn () => redirect()->route('dashboard'));
+
+Route::get('/health', function () {
+    try {
+        DB::connection()->getPdo();
+        $dbStatus = 'ok';
+    } catch (\Throwable) {
+        $dbStatus = 'error';
+    }
+
+    $status = $dbStatus === 'ok' ? 'ok' : 'degraded';
+    $code   = $status === 'ok' ? 200 : 503;
+
+    return response()->json(['status' => $status, 'db' => $dbStatus], $code);
+})->name('health');
 
 Route::middleware(['auth', 'verified'])->group(function () {
 
