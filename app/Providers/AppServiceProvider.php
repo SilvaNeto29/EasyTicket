@@ -3,6 +3,7 @@
 namespace App\Providers;
 
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -20,6 +21,8 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+        Gate::define('viewPulse', fn ($user) => true);
+
         if (DB::getDriverName() === 'sqlite') {
             $database = config('database.connections.sqlite.database');
             if ($database !== ':memory:') {
