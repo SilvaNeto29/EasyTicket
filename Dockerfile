@@ -12,7 +12,6 @@ RUN apk add --no-cache \
     sqlite \
     sqlite-dev
 
-# bcmath, pcntl, mbstring, xml need installation; pdo_sqlite/ctype/fileinfo/tokenizer are already compiled in
 RUN docker-php-ext-install bcmath pcntl mbstring xml
 
 COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
