@@ -1,11 +1,11 @@
 # EasyTicket
 
-Projeto de estudos em Laravel 12 — gerenciador de tickets com kanban board e integração MCP para uso com Claude Desktop.
+Projeto de estudos em Laravel 12 — gerenciador de tickets com kanban board e integração MCP para uso com Claude Code ou outras ferramentas que conseguem utilizar MCP.
 
 ## Features
 
 - Kanban board com projetos e tickets (status: backlog, todo, in progress, done)
-- **MCP Server** — o Claude Desktop consegue criar, listar e atualizar tickets via linguagem natural
+- **MCP Server** — o Claude Code consegue criar, listar e atualizar tickets via linguagem natural
 - Laravel Pulse — dashboard de observabilidade em tempo real (requests, queries, exceptions)
 - Autenticação completa com Laravel Breeze (Livewire + Volt)
 - Personal Access Tokens via Sanctum para autenticação do MCP
@@ -24,12 +24,12 @@ Acesse [http://localhost:8080](http://localhost:8080) — crie uma conta e comec
 
 > O primeiro build leva ~60s (Composer + assets dentro da imagem). A key do Laravel e as migrations rodam automaticamente no entrypoint.
 
-## MCP Integration (Claude Desktop)
+## MCP Integration (Claude Code)
 
 Com o app rodando:
 
 1. Acesse **Profile → API Tokens** e gere um token
-2. Adicione ao config do Claude Desktop (`~/.claude/claude_desktop_config.json`):
+2. Adicione ao config do Claude Code (`~/.claude/claude_desktop_config.json`):
 
 ```json
 {
@@ -44,7 +44,7 @@ Com o app rodando:
 }
 ```
 
-3. Reinicie o Claude Desktop — as ferramentas aparecem: `create_project`, `create_ticket`, `list_tickets`, `update_ticket_status`, `export_data`, entre outras.
+3. Reinicie o Claude Code — as ferramentas aparecem: `create_project`, `create_ticket`, `list_tickets`, `update_ticket_status`, `export_data`, entre outras.
 
 ## Rodando os testes
 
